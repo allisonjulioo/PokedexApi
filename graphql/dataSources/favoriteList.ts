@@ -1,24 +1,50 @@
 import { database } from '../../database/dbService';
 import { getById } from './pokemon';
 
-interface ID {
-  id: number;
-}
-
 const path = '/favoritelist';
 
 const findFavoriteById = async (dataId: string) => {
-  const data = await database.getData(path);
-  return data.find((data: ID) => data.id === +dataId);
+  const result = await new Promise((resolve, reject) => {
+    try {
+      let sql = `SELECT * FROM favorite_pokemon WHERE pokemon_id = ?`;
+
+      database.get(sql, [String(dataId)], (err: any, item: any) => {
+        if (err) {
+          throw err;
+        }
+        resolve(item);
+        return item;
+      });
+    } catch (error) {
+      reject(error);
+      console.error(error);
+    }
+  });
+
+  return result;
 };
 
 const getAllFavorite = async () => {
-  try {
-    const data = database.getData(path);
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
+  return new Promise((resolve, reject) => {
+    try {
+      const sql = `SELECT * FROM favorite_pokemon`;
+
+      database.all(sql, [], (err: any, rows: any) => {
+        if (err) {
+          throw err;
+        }
+        const results = rows.map(async (row: any) => {
+          return await getById(row.pokemon_id);
+        });
+
+        resolve(results);
+        return results;
+      });
+    } catch (error) {
+      reject(error);
+      console.error(error);
+    }
+  });
 };
 
 const saveFavoritePokemon = async (id: string) => {
@@ -28,24 +54,37 @@ const saveFavoritePokemon = async (id: string) => {
     return;
   }
 
-  const response = (await getById(id)) as ID;
-  database.push(path, [response], false);
-
-  return response;
+  database.run(
+    `INSERT INTO favorite_pokemon(pokemon_id) VALUES(?)`,
+    [id],
+    (err: any, data: any) => {
+      if (err) {
+        return console.log(err.message);
+      }
+      console.log(`A row has been inserted with rowid ${data}`);
+    },
+  );
 };
 
-const deleteFavorite = (dataId: string) => {
-  const index = database.getIndex(path, +dataId, 'id');
-  if (!index) {
-    return 'not found';
-  }
+const deleteFavorite = async (dataId: string) => {
+  const result = await new Promise((resolve, reject) => {
+    try {
+      let sql = `DELETE FROM favorite_pokemon WHERE pokemon_id = ?`;
 
-  try {
-    database.delete(`${path}[${index}]`);
-    return 'removed';
-  } catch (error) {
-    return error;
-  }
+      database.get(sql, [String(dataId)], (err: any, item: any) => {
+        if (err) {
+          throw err;
+        }
+        resolve(item);
+        return item;
+      });
+    } catch (error) {
+      reject(error);
+      console.error(error);
+    }
+  });
+
+  return result;
 };
 
 export { getAllFavorite, saveFavoritePokemon, deleteFavorite, findFavoriteById };

@@ -30,17 +30,18 @@ interface PokemonApiResponse {
   };
 }
 
-const createObjectPokemon = (pokemon: PokemonApiResponse) => {
+const createObjectPokemon = async (pokemon: PokemonApiResponse) => {
   const types = pokemon.types.flatMap(({type}) => ({
     color: colorType(type.name),
     name: type.name,
   }));
+
   const image = pokemon.sprites.other['official-artwork'].front_default;
   const name = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
   const primaryColor = lightenDarkenColor(types[0].color, 50);
   const score = pokemon.base_experience;
   const id = pokemon.id;
-  const favorite = Boolean(findFavoriteById(pokemon.id));
+  const favorite = Boolean(await findFavoriteById(pokemon.id));
 
   return {
     id,
@@ -93,11 +94,13 @@ const getById = async (id: string) => {
   return new Promise((resolve, reject) => {
     axios
       .get(`${hostname}${path}/${id}/`)
-      .then(pokemon => {
-        resolve({
-          ...createObjectPokemon(pokemon.data),
-          abilities: getAbilities(id),
-        });
+      .then(async pokemon => {
+        const response = {
+          ...(await createObjectPokemon(pokemon.data)),
+          abilities: await getAbilities(id),
+        };
+
+        resolve(response);
       })
       .catch(reject);
   });

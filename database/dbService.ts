@@ -1,6 +1,20 @@
-import {JsonDB} from 'node-json-db';
-import {Config} from 'node-json-db/dist/lib/JsonDBConfig';
+const sqlite3 = require('sqlite3').verbose();
+const database = new sqlite3.Database('./database.db', (err: any) => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log('Connected to the in-memory SQlite database.');
+});
 
-const database = new JsonDB(new Config('database', true, false, '/'));
+database.run(
+  `CREATE TABLE IF NOT EXISTS favorite_pokemon (id,pokemon_id);`,
 
-export {database};
+  (err: any) => {
+    if (err) {
+      console.error(err.message);
+    }
+  },
+);
+
+export { database };
+
