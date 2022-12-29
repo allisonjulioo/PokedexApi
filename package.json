@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "copy-schemas": "cpx src/**/*.graphql build/schema",
-    "start": "tsc && npm run copy-schemas && node ./build/index.js",
-    "build": "rimraf ./build && tsc -p .",
-    "dev": "npm run build:dev",
+    "copy-schemas": "cpx **/*.graphql build/schema",
+    "start": "node ./build/index.js",
+    "build": "rimraf ./build && tsc -p . && yarn copy-schemas",
+    "dev": "yarn build:dev",
     "format": "prettier-eslint --eslint-config-path ./.eslintrc --write '**/*.ts'",
     "lint": "eslint . --ext .ts",
-    "build:dev": "nodemon 'src/index.ts' --exec 'ts-node' src/index.ts -e ts,graphql"
+    "build:dev": "nodemon 'index.ts' --exec 'ts-node' index.ts -e ts,graphql"
   },
   "keywords": [],
   "author": "",

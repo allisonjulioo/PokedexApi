@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "src/",
+    "baseUrl": "./",
     "allowJs": true,
     "target": "es2017",
     "esModuleInterop": true,
@@ -17,12 +17,9 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "server.ts"],
   "exclude": [
     "node_modules",
     "babel.config.js",
-    "jest.config.js",
-    "**/*.test.ts",
-    "src/helpers/testClient"
+    "jest.config.js"
   ]
 }

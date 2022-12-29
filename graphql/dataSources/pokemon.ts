@@ -1,8 +1,8 @@
 import axios from 'axios';
-import {PokemonListInput} from 'graphql/pokemonList/resolver';
-import {colorType} from '../../utils/pokemonColors';
-import {lightenDarkenColor} from '../../utils/lightenDarkenColor';
-import {findFavoriteById} from './favoriteList';
+import { PokemonListInput } from 'graphql/pokemonList/resolver';
+import { lightenDarkenColor } from '../../utils/lightenDarkenColor';
+import { colorType } from '../../utils/pokemonColors';
+import { findFavoriteById } from './favoriteList';
 
 const hostname = 'http://pokeapi.co/api/v2';
 const path = '/pokemon';
@@ -137,4 +137,5 @@ const getAll = async (input: PokemonListInput['input']) => {
   } catch (error) {}
 };
 
-export {getAll, getById};
+export { getAll, getById };
+
