@@ -1,6 +1,5 @@
-import {PokemonListInput} from '../pokemonList/resolver';
-import {database} from '../../database/dbService';
-import {getById} from './pokemon';
+import { database } from '../../database/dbService';
+import { getById } from './pokemon';
 
 interface ID {
   id: number;
@@ -8,8 +7,8 @@ interface ID {
 
 const path = '/favoritelist';
 
-const findFavoriteById = (dataId: string) => {
-  const data = database.getData(path);
+const findFavoriteById = async (dataId: string) => {
+  const data = await database.getData(path);
   return data.find((data: ID) => data.id === +dataId);
 };
 
@@ -23,7 +22,7 @@ const getAllFavorite = async () => {
 };
 
 const saveFavoritePokemon = async (id: string) => {
-  const hasSaved = findFavoriteById(id);
+  const hasSaved = await findFavoriteById(id);
 
   if (hasSaved) {
     return;
@@ -49,4 +48,5 @@ const deleteFavorite = (dataId: string) => {
   }
 };
 
-export {getAllFavorite, saveFavoritePokemon, deleteFavorite, findFavoriteById};
+export { getAllFavorite, saveFavoritePokemon, deleteFavorite, findFavoriteById };
+
