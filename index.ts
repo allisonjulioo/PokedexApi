@@ -5,17 +5,13 @@ import compression from 'compression';
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
-import depthLimit from 'graphql-depth-limit';
 import { createServer } from 'http';
-import schema from './graphql/schema';
+import { APOLLO_CONFIG } from './graphql/schema';
 
 async function startApolloServer() {
   const app = express();
 
-  const server = new ApolloServer({
-    schema,
-    validationRules: [depthLimit(7)],
-  });
+  const server = new ApolloServer(APOLLO_CONFIG);
 
   await server.start();
 
