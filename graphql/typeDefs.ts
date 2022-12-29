@@ -1,7 +1,6 @@
-import { gql } from 'apollo-server';
 import pokemonList from './../schema/schema.graphql';
 
-const pokeSchema = gql`
+const pokeSchema = `
   type Query {
     _: Boolean
   }

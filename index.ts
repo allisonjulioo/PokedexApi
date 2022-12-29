@@ -1,15 +1,13 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { json } from 'body-parser';
 import compression from 'compression';
+import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
 import depthLimit from 'graphql-depth-limit';
 import { createServer } from 'http';
 import schema from './graphql/schema';
-
-const corsOptions = {
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-};
 
 async function startApolloServer() {
   const app = express();
@@ -32,16 +30,23 @@ async function startApolloServer() {
 
   app.use(compression());
 
-  server.applyMiddleware({app, path: '/graphql', cors: corsOptions});
+  const corsOptions = {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  };
+
+  app.use(
+    '/graphql',
+    cors<cors.CorsRequest>(corsOptions),
+    json(),
+    expressMiddleware(server),
+  );
 
   const httpServer = createServer(app);
-  const port = 8000;
+  const port = process.env.PORT || 8000;
 
-  httpServer.listen({port}, () =>
-    console.log(
-      `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`,
-    ),
-  );
+  await new Promise<void>(resolve => httpServer.listen({port}, resolve));
+  console.log(`🚀 Server ready at http://localhost:${port}${server.cache}`);
 }
 
 startApolloServer();
