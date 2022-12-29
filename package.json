@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "copy-schemas": "cpx **/*.graphql build/schema",
+    "copy-schemas": "cpx **/*.graphql build/schema && cpx database/db.json build/database",
     "start": "node ./build/index.js",
     "build": "rimraf ./build && tsc -p . && yarn copy-schemas",
     "dev": "yarn build:dev",
